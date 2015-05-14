@@ -1,0 +1,54 @@
+###############################################################################
+# NAME:         makefile
+# VERSION:      2.0 beta
+# RELEASED:     01 AUGUST 2007
+# AUTHORS:      Paul M. VanRaden (paul@aipl.arsusda.gov)
+#               John B. Cole (john.cole@ars.usda.gov)
+# DESCRIPTION:  makefile for the bestpred package from AIPL.
+###############################################################################
+all: ageadjs.o ageadj.o aiplage.o bestpred.o bestpred_fmt4.o bestpred_parm.o bestpred_log.o bestpred
+
+ageadjs.o: ageadjs.c
+	gcc -c ageadjs.c -O2
+
+aiplage.o: aiplage.c aiplage.h
+	gcc -c aiplage.c -O2
+
+ageadj.o: ageadj.c ageadj.h
+	gcc -c ageadj.c -O2
+
+bestpred_parm.o: bestpred_parm.f90
+	f90 -c bestpred_parm.f90 -O2 \
+		-YEXT_NAMES=LCS -s \
+		-YEXT_SFX=""
+
+bestpred_log.o: bestpred_log.f90
+	f90 -c bestpred_log.f90 -O2 \
+		-YEXT_NAMES=LCS -s \
+		-YEXT_SFX=""
+
+bestpred.o: bestpred.f90 bestpred_parm.o bestpred_log.o
+	f90 -c bestpred.f90 -O2 \
+		-YEXT_NAMES=LCS -s \
+		-YEXT_SFX="" \
+		bestpred_parm.o \
+		bestpred_log.o
+
+bestpred_fmt4.o: bestpred_fmt4.f90 bestpred.o ageadjs.o aiplage.o
+	f90 -c bestpred_fmt4.f90 -O2 \
+		-YEXT_NAMES=LCS -s \
+		-YEXT_SFX="" \
+		ageadjs.o \
+		aiplage.o
+
+bestpred: bestpred_main.f90 bestpred.o ageadjs.o aiplage.o bestpred_fmt4.o bestpred_parm.o bestpred_log.o
+	f90 bestpred_main.f90 -o bestpred -O2 \
+		-YEXT_NAMES=LCS \
+		-YEXT_SFX="" \
+		-s -lm \
+		ageadjs.o \
+		aiplage.o \
+		bestpred_fmt4.o \
+		bestpred.o \
+		bestpred_parm.o	\
+		bestpred_log.o

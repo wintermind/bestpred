@@ -1,0 +1,64 @@
+# Compile Data Collection Rating programs
+# Compile age adjustment programs            (makefile)
+#
+all: ageadjs.o ageadj.o aiplage.o bestpred.o bestpred_fmt4.o bestpred_parm.o  bestpred_log.o bestpred
+
+ageadjs.o: ageadjs.c
+	gcc -ggdb -O2 -L. -I. -c ageadjs.c
+
+aiplage.o: aiplage.c aiplage.h
+	gcc -ggdb -O2 -L. -I. -c aiplage.c
+
+ageadj.o: ageadj.c ageadj.h
+	gcc -ggdb -O2 -L. -I. -c ageadj.c
+
+#g95 -c bestpred_log.f90 -O2 \
+#                -fno-underscoring  \
+#                -fsloppy-char      \
+#                -ftrace=full       \
+#                -fstatic
+
+bestpred_parm.o: bestpred_parm.f90
+	g95 -O2 -L. -I. -c bestpred_parm.f90 \
+		-fno-underscoring \
+                -fsloppy-char \
+                -ftrace=full \
+                -fstatic
+
+bestpred_log.o: bestpred_log.f90
+	g95 -O2 -L. -I. -c bestpred_log.f90 \
+		-fno-underscoring \
+                -fsloppy-char \
+                -ftrace=full \
+                -fstatic
+
+bestpred.o: bestpred.f90 bestpred_log.o
+	g95 -O2 -L. -I. -c bestpred.f90 \
+		-fno-underscoring \
+                -fsloppy-char \
+                -ftrace=full \
+                -fstatic \
+		bestpred_log.o
+
+bestpred_fmt4.o: bestpred_fmt4.f90 ageadjs.o aiplage.o bestpred.o
+	g95 -O2 -L. -I. -c bestpred_fmt4.f90 \
+		-fno-underscoring \
+                -fsloppy-char \
+                -ftrace=full \
+                -fstatic \
+		ageadjs.o \
+		aiplage.o \
+		bestpred.o
+
+bestpred: bestpred_main.f90 bestpred_parm.o bestpred_log.o bestpred_fmt4.o bestpred.o ageadjs.o aiplage.o
+	  g95 -O2 -L. -I. bestpred_main.f90 -o bestpred \
+		-fno-underscoring \
+                -fsloppy-char \
+                -ftrace=full \
+                -fstatic \
+		bestpred_fmt4.o	\
+		ageadjs.o \
+                aiplage.o \
+                bestpred.o \
+		bestpred_log.o \
+		bestpred_parm.o

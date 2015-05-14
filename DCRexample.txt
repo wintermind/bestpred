@@ -1,0 +1,116 @@
+_______________________________________________________________________________
+_ NAME:         DCRexample.txt
+_ VERSION:      2.0 beta
+_ RELEASED:     01 AUGUST 2007
+_ AUTHORS:      Paul M. VanRaden (paul@aipl.arsusda.gov)
+_ DESCRIPTION:  This is an input file for bestpred.f90 that is used to
+_               simulate lactations. This file is part of the bestpred
+_               package from AIPL.
+_______________________________________________________________________________
+_ Input file for DCR program
+_
+_ To create example lactation data, set test day variables below.
+_ Supervised data is coded 1 and Owner-Sampler is coded 2.
+_ Leave a blank line after each example. Use multiple lines
+_ for testing plans that change e.g. every other month.
+_
+_ super- times  times times  LER  testplan first last par-
+_ vised  milked weigh sample days interval test  test ity  plan-name
+____________________________________________________________________
+    1      2      2     2      1      30     15  255   5  255-day RIP
+	
+    1      3      2     2      7      60     30  300   4  LER sampled
+    1      3      2     0      7      60     60  300   4  odd months
+	
+    1      2      2     2      1      30     15  285   1  Supervised
+
+    1      3      2     2      1      30     15  285   1  AMPM 2 of 3
+
+    1      2      1     1      1      30     15  285   1  AMPM 1 of 2
+
+    1      3      1     1      1      30     15  285   1  AMPM 1 of 3
+
+    2      2      2     2      1      30     15  285   1  Owner-Sampler
+
+    2      3      2     2      1      30     15  285   1  OS AP 2 of 3
+
+    2      2      1     1      1      30     15  285   1  OS AP 1 of 2
+
+    2      3      1     1      1      30     15  285   1  OS AP 1 of 3
+
+    1      2      2     2      1      60     30  270   1  Bimonthly
+
+    1      3      2     2      1      60     30  270   1  Bi AP 2 of 3
+
+    1      2      1     1      1      60     30  270   1  Bi AP 1 of 2
+
+    1      3      1     1      1      60     30  270   1  Bi AP 1 of 3
+
+    2      2      2     2      1      60     30  270   1  OS Bimonthly
+
+    2      3      2     2      1      60     30  270   1  OS Bi 2 of 3
+
+    2      2      1     1      1      60     30  270   1  OS Bi 1 of 2
+
+    2      3      1     1      1      60     30  270   1  OS Bi 1 of 3
+
+    1      3      3     3     30      30     30  300   1  Daily
+
+    1      3      3     3     10      30     15  285   1  LER (10 days)
+
+    1      3      3     3      5      30     15  285   1  LER (5 days)
+
+    1      2      2     2      1      30     15  105   5  105-day RIP
+
+    1      2      2     2      1      30     15   45   5  45-day RIP
+
+    1      2      2     2      1      30     15   15   2  15-day RIP
+
+    1      2      2     2      1      30    366  366   2  Null record
+
+    1      2      2     0      1      30     15  285   5  Milk-only
+
+    1      2      2     1      1      90     30  300   1  Sampling
+    1      2      2     0      1      90     60  330   1  every third
+    1      2      2     0      1      90     90  360   1  month
+
+    1      2      2     1      1      60     30  300   1  Sampling in
+    1      2      2     0      1      60     60  330   1  odd months
+
+    1      2      2     1      1      60     30  150   1  150-d, sample
+    1      2      2     0      1      60     60  120   1  odd months
+
+    1      2      2     1      1      90     30  120   1  150-d, sample
+    1      2      2     0      1      90     60  150   1  every third
+    1      2      2     0      1      90     90   90   1  month
+
+    1      3      3     3      1      30     30  150   1  Switch
+    1      2      2     0      1      30    180  300   1  3X to 2X
+
+    1      2      2     0      1      30     30  120   1  Switch
+    1      3      3     3      1      30    150  150   1  2X to 3X
+
+    1      3      3     3      1      30     30  150   1  Switch
+    1      2      2     0      1      30    180  375   1  3X to 2X
+
+    1      2      2     2      1      60     15  360   1  Alternate
+    1      3      3     0      1      60     45  375   1  2X and 3X
+
+    1      2      2     2      1      90     45  315   2  Quarterly
+
+    1      3      2     2      1      90     45  315   2  Qtrly 2/3
+
+    1      2      1     1      1      90     45  315   2  Qtrly A-P
+
+    1      3      1     1      1      90     45  315   2  Qtrly 1/3
+
+    2      2      2     2      1      90     45  315   2  Quarterly OS
+
+    2      3      2     2      1      90     45  315   2  Qtrly 2/3 OS
+
+    2      2      1     1      1      90     45  315   2  Qtrly A-P OS
+
+    2      3      1     1      1      90     45  315   2  Qtrly 1/3 OS
+
+    1      3      3     3      1      30     15  170   2  Ted's cow
+

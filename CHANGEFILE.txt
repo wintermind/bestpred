@@ -1,0 +1,281 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! NAME:         CHANGEFILE.txt
+! VERSION:      2.0 rc 7
+! RELEASED:     24 APRIL 2015
+! AUTHORS:      John B. Cole (john.cole@ars.usda.gov)
+! DESCRIPTION:  List of changes made to the BESTPRED programs.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Date        Program             Version Person  Description
+===============================================================================
+04/28/2015  bestpred_main.f90   2.0rc7  JBC     Fixed a bug in Format 4 processing
+						reported by Miels Hostens that was
+						caused by a mixup between f248 and
+						n248 strings when writing data to
+						the format4 variable passed into
+						bestpred_fmt4.f90. The values
+						written to the format4 variable
+						were being taken from f248 in all
+						cases, never from n248, so the data
+						from the input file were never
+						being passed downstream.
+04/24/2015  Documentation       2.0rc7  JBC     Updated the documentation on
+						minimal Format 4 records (source
+						10 processing).
+04/24/2015  Makefiles           2.0rc7  JBC     Tweaked compiler options.
+04/24/2015  all *.f90 files     2.0rc7  JBC     There are about 1,000,000
+						compiler warnings that need to
+						be fixed. Or I can change the
+						makefile to turn off a bunch of
+						them. ;-)
+04/24/2015  bestpred_fmt4.dat   2.0rc7  JBC     If a minimal Format 4 does NOT
+						include a state code in bytes
+						107-108 of the record then it's
+						set to 0. This causes the aiplage
+						routine to return some...odd...
+						values for the age adjustment
+						factors. Going forward, if the
+						state is 0 then it will be set
+						to 35 (Wisconsin) and a message
+						printed to STDOUT. This fixes a
+						bug reported by Miel Hostens and
+						his colleagues.
+04/21/2015  bestpred.f90        2.0rc7  JBC     In the vary() function code 4
+						had a value of 0., which results
+						in very low DCR for robotic
+						herds. Changed to 1. to match
+						supervised herds. This resolves
+						a bug reported by AgSource.
+04/21/2015  bestpred.f90        2.0rc7  JBC     Made some minor formatting changes
+						to the lactation summaries.
+11/19/2014  bestpred_main,f90   2.0rc7  JBC	Added CURVEsingle to the parm
+            bestpred_parm.f90			file. When 0, all cow curve
+            bestpred_fmt4.f90			and lactation summary results
+            bestpred.f90			are written to the same file.
+						When 1, a separate file is
+						written for each cow.
+11/18/2014  bestpred_main.f90   2.0rc7  JBC	Corrected a typo relating to
+						persistency floors & ceilings.
+11/18/2014  bestpred_main.f90   2.0rc7  JBC	Added new input format, source
+						24, that reads a file named
+						pcdart_files.txt. Each line
+						in that file is the name of a
+						file that contains source 14
+						records. This lets a user
+						process animals from different
+						herds in one run of bestpred
+						to avoid repeatedly paying
+						startup costs.
+10/02/2014  bestpred_main.f90   2.0rc7  JBC     Corrected the format string
+						so that the columns in Format
+						14 (.bpo) files are no longer
+						run together. Thanks to Albert
+						de Vries at UF for reporting
+						the problem.
+10/02/2014  bestpred_main.f90   2.0rc7  JBC	Added an INTERFACE block for
+						the interpolate() subroutine
+						so that the oprional arguments
+						(region and season) are now
+						correctly handled. Thanks to
+						John Beaulieu at ATA for
+						reporting the problem.
+08/13/2009  bestpred_main.f90   2.0rc6  JBC     Removed maxshow from the para-
+                                                meter statement so that the
+                                                correct number of lactation
+                                                summaries is now shown when
+                                                using the standalone version.
+08/13/2009  bestpred.f90        2.0rc6  JBC     Summary information, such as
+                                                the table of lactation average
+                                                yields, is now printed only
+                                                the first time bestpred() is
+                                                called when processing many
+                                                records from format4.dat.
+08/13/2009  bestpred.f90        2.0rc6  JBC     Cow identification is now
+                                                printed with the table of
+                                                ME and actual yields.
+08/11/2009  ageadjs.c           2.0rc6  JBC     Updated to the latest version,
+                                                which uses additive rather
+                                                than multiplicative factors
+                                                for SCS.
+08/11/2009  bestpred_fmt4.f90   2.0rc6  JBC     Changed edits on TD segments
+                                                w/status 2 to let SCS through
+                                                rather than blanking it.
+08/11/2009  bestpred_fmt4.f90   2.0rc6  JBC     SCS herd averages now divided
+                                                by 100 just before the call to
+                                                bestpred().
+08/11/2009  bestpred.f90        2.0rc6  JBC     Herd average SCS are now on the
+                                                phenotypic scale, e.g., 3.20,
+                                                rather than multiplied by 100.
+                                                This is necessary for compat-
+                                                ibility with the AIPL edits
+                                                system.
+03/16/2009  bestpred_main.f90   2.0rc5  JBC     Fixed a format statement that
+                                                caused G95 to throw warnings
+                                                on the Windows build.
+03/16/2009  bestpred.f90        2.0rc5  JBC     Corrected use of non-portable
+                                                inequality operators that were
+                                                breaking Windows builds..
+03/13/2009  Documentation       2.0rc4  JBC     Updated documentation to reflect
+                                                changes to parameters and file
+                                                formats. Added new material to the
+                                                Troubleshooting chapter.
+03/13/2009  bestpred.f90        2.0rc4  JBC     Added the \var{CURVEsmall} parameter,
+                                                which controls what variables are
+                                                written to the CURVEfile.
+03/13/2009  bestpred.f90        2.0rc4  JBC     GRAFplot now toggles traits
+                                                writtenen to CURVEfile on and off.
+03/13/2009  bestpred,f90        2.0rc4  JBC     Output curve files now contain
+                                                only one TD yield column.
+03/13/2009  bestpred_parm.f90   2.0rc4  JBC     Moved all of the version data
+            bestpred_main.f90                   out of the parameter file and
+            bestpred_fmt4.f90                   into the bestpred subroutine.
+            bestpred.f90
+03/13/2009  bestpred.f90        2.0rc4  JBC     Fixed a bug in which missing
+                                                values in the DAILYbp were
+                                                mistakenly set to 0.0, which
+                                                resulted in very strange plots.
+10/17/2008  bestpred_main.f90   2.0rc3  JBC     Merged-in Brad Heins's code
+                                                for reading previous days open
+                                                from columns 246 through 248 of
+                                                Format 4 (source 10 and 15)
+                                                records.
+10/16/2008  bestpred_main.f90   2.0rc3  JBC     Added code to support source
+                                                15, which is the same as 10
+                                                but 305-d herd averages are
+                                                also read from the file
+                                                format4.means. The means are
+                                                stored in the first row of
+                                                the herd305 array
+                                                (herd305(1,:).
+08/19/2008  All makefiles	2.0rc2	JBC	Rearranged the makefiles such
+						that all dependencies are
+						built and linked in the
+						correct order. I don't know
+						the Absoft linker ever worked
+						with the default file!
+08/19/2008  bestpred.f90	2.0rc2	JBC	Added a few lines of code to
+						better handle records with no
+						test days. Thanks to Jim Boyer
+						for noting the bugs and
+						providing working code.
+08/19/2008  bestpred_fmt4.f90	2.0rc2	JBC	Removed logging and parameter
+						file dependencies.
+08/19/2008  bestpred.f90	2.0rc2	JBC	Removed logging dependency.
+08/19/2008  makefile.g95	2.0rc2	JBC	Fixed makefile for use with
+						the G95 Fortran compiler.
+08/18/2008  bestpred.f90	2.0rc2  JBC     Removed mature parameter from
+                                                the ymean() subroutine header.
+08/18/2008  makefile.gnu        2.0rc2  JBC     Replaced references to maindcr
+						with references to bestpred;
+						removed the -static directive
+						from calls to gfortran because
+						they wreck [sic] havoc with
+						OSX.
+08/11/2008  Best Prediction Manual.pdf	JBC	Added material on using
+						simulated data to test a new
+						installation.
+08/08/2008  Best Prediction Manual.pdf	JBC	Added material to some tables;
+						corrected typos; updated default
+						parameter values.
+08/08/2008  bestpred_main.f90	2.0rc1	JBC	Added debugging code to display
+						the data returned by the
+						bestpred() subroutine; it is
+						activated by setting maxprnt to	
+						-1.
+08/08/2008  bestpred_main.f90	2.0rc1	JBC	Added maxshow to the subroutine
+						header. This fixes graph display
+						problems in which maxshow and
+						maxprnt were not working properly.
+08/08/2008  bestpred_fmt4.f90	2.0rc1	JBC	Added maxshow to the call to
+						bestpred().
+08/08/2008  bestpred_main.f90	2.0rc1	JBC	Added maxshow to the call to
+						bestpred_fmt4().
+08/07/2008  bestpred_main.f90	2.0rc1	JBC	Made modifications to the code
+						that prints incoming data for
+						debugging. The data were being
+						displayed in kilograms regardless
+						of the input units. The printout
+						now uses same units as the
+						incoming data.
+08/06/2008  Best Prediction Manual.pdf  JBC     Updated to reflect new file
+                                                formats, removal of the mature
+                                                parm, uses of GRAFplot, and
+                                                the logging module.
+08/07/2008  bestpred_parm.f90   2.0b9   JBC     Added code to check GRAFplot
+                                                for permissible values; if
+                                                invalid values are found the
+                                                default of 2 (actual values)
+                                                is used.
+08/07/2008  bestpred.f90        2.0b9   JBC     GRAFplot is now checked for
+                                                permissible values and used as
+                                                an index in plot drawing to
+                                                toggle between ME and actual
+                                                plots.
+08/06/2008  bestpred.f90        2.0b9   JBC     Fixed an array with incorrect
+                                                dimensions that was corrupting
+                                                herd averages.
+08/06/2008  bestpred_fmt4.f90   2.0b9   JBC	Changed how 305d herd averages
+                                                are calculated.
+08/06/2008  bestpred_main.f90	2.0b9	JBC	Fixed another bug w/lactation
+						length handling.
+08/05/2008  bestpred.f90        2.0b9   JBC     Removed 'mature' parameter from
+                                                the subroutine. Mature and ME
+                                                yields are now returned from a
+                                                single call to the subroutine.
+08/05/2008  bestpred_fmt4.f90   2.0b9   JBC     Removed 'mature' parameter.
+08/05/2008  bestpred_parm.f90   2.0b9   JBC     Removed 'mature' parameter.
+08/05/2008  bestpred_main.f90   2.0b9   JBC     Removed 'mature' parameter.
+08/05/2008  bestpred_main.f90   2.0b9   JBC     Fixed a bug in which the lengths
+                                                of sample lactations read from
+                                                DCRexample.txt were not being
+                                                correctly calculated.
+04/03/2008  Best Prediction Manual.pdf	JBC	Updated manual.
+04/03/2008  bestpred_log.f90	2.0b8	JBC	Fixed a glitch in the header
+						of newly-created log files.
+03/19/2006  bestpred*.f90       2.0b8   JBC     Modified parameter lists to support
+                                                logging tools.
+03/13/2006  bestpred_main.f90   2.0b8   JBC     Removed unused variable declarations
+                                                to get a clean compile.
+03/12/2006  makefile            2.0b8   JBC     Added entries for compiling the
+                                                logging module.
+03/12/2006  bestpred_log.f90    2.0b8   JBC     Added logging module.
+03/12/2006  bestpred_main.f90   2.0b8	JBC	Made changes to input record
+						processing so that the last
+						record read from source 10
+						is no longer skipped. Also
+						verified that I did not break
+						processing of records w/0 TD.
+12/19/2007  bestpred.f90        2.0b8   JBC     Updated all lactation curves
+                                                (mean and SD for MFPS) to use
+                                                parameters based on 1 versus
+                                                2-and-later parities using up
+                                                to 500-d data for MFP and
+						999-d data for SCS instead of
+						1 versus 3+ parities.
+12/14/2007  bestpred.f90	2.0b8	JBC	Updated the regression coeffs.
+                                                in the vary() function with
+                                                new values from a corrected
+                                                program.
+12/10/2007  bestpred.f90        2.0b7   JBC     Updated mean and SD lactation
+                                                curves for all breeds and traits.
+12/05/2007  bestpred_fmt4.f90   2.0b7   JBC     Modified the format4 string to
+                                                take up to 50 TD rather than
+                                                20 as in the Format 4
+                                                specification.
+12/05/2007  bestpred_main.f90   2.0b7   JBC     Modified the format4 string to
+                                                take up to 50 TD rather than
+                                                20 as in the Format 4
+                                                specification. Commented out
+                                                JBC code for writing lactation
+                                                curves b/c (1) the code didn't
+                                                work correctly, and (2) curves
+                                                are now written to files by a
+                                                function in bestpred.f90.
+12/04/2007  bestpred.f90        2.0b7   JBC     Updated lactation curve parms for
+                                                later parity M, F, and P in the
+                                                interpolate subroutine from the 305
+                                                d Dematawewa et al. (2007) parms to
+                                                the 999 d parms.
+12/04/2007  standard_curves.py  2.0b7   JBC     Updated lactation curve parms for
+                                                later parity HO M, F, and P from the
+                                                305 d Dematawewa et al. (2007) parms
+                                                to the 999 d parms.

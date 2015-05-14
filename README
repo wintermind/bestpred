@@ -1,0 +1,41 @@
+Cole, J. B., and P. M. VanRaden. 2008. A Manual for Use of BESTPRED: A Program
+for Estimation of Lactation Yield and Persistency Using Best Prediction.
+ 
+U.S. Department of Agriculture, Agricultural Research Service, Animal Genomics
+and Improvement Laboratory.
+ 
+This manual describes how to obtain, install, and run a Fortran 90 program for
+calculating lactation yields and persistencies using best prediction
+methodology. Chapters also present the theory underlying best prediction,
+describe the methodology used to calculate covariances among pairs of days in
+milk for any combination of traits, and discuss implementation details important
+to anyone considering modifications to the programs. The purpose is to provide
+both background material and step-by-step instructions for successful use of the
+software.
+ 
+The authors of this software do not make any warranty, express or implied, or
+assume any liability or responsibility for the accuracy, completeness, or
+usefulness of any information, apparatus, product, or process disclosed, or
+represent that its use would not infringe privately-owned rights. Reference
+herein to any specific commercial products, processes, or services by trade
+name, trademark, manufacturer, or otherwise, does not necessarily constitute
+or imply its endorsement, recommendation, or favoring by the United States
+Government or the author. The views and opinions of authors expressed herein
+do not necessarily state or reflect those of the United States Government
+and shall not be used for advertising or product endorsement purposes.
+ 
+Permission to use, copy, modify, and distribute this software for any purpose
+without fee is hereby granted, provided that this entire notice is included
+in all copies of any software which is or includes a copy or modification of
+this software and in all copies of the supporting documentation for such
+software.
+ 
+7-Zip is copyrighted 2007 by Igor Pavlov. Absoft is a registered trademark and
+Absoft Fortran v10 is a trademark of Absoft Corporation, Rochester Hills, MI.
+DB2 is a registered trademark of International Business Machines Corporation,
+Armonk, NY. G95 is copyrighted 2004 by the Free Software Foundation, Boston, MA.
+GCC, the GNU Compiler Collection, is copyrighted 2007 by the Free Software
+Foundation, Boston, MA. Kubuntu is a registered trademark of Canonical Ltd.
+Linux is copyrighted 2007 by Linus Torvalds. Microsoft is a registered trademark
+and Windows is a trademark of Microsoft Corporation, Redmond, WA. Red Hat and
+Red Hat Enterprise Linux are registered trademarks of Red Hat, Inc., Raleigh, NC.

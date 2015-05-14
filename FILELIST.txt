@@ -1,0 +1,37 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! NAME:         FILELIST.txt
+! VERSION:      2.0 beta 9
+! RELEASED:     07 AUGUST 2008
+! AUTHORS:      John B. Cole (john.cole@ars.usda.gov)
+! DESCRIPTION:  Text file listing the files that are distributed as part of the
+!               bestpred package from AIPL.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+adjscs.h
+adjust.scs
+ageadj.c
+ageadj.h
+ageadjs.c
+age.h
+aiplage.c
+aiplage.h
+Best Prediction Manual.pdf
+bestpred.f90
+bestpred.par
+bestpred_curves.py
+bestpred_fmt4.f90
+bestpred_log.f90
+bestpred_main.f90
+bestpred_parm.f90
+CHANGEFILE.txt
+DCRexample.results.dcr
+DCRexample.txt
+FILELIST.txt
+LICENSE
+makefile
+makefile.Absoft
+makefile.g95
+makefile.gnu
+README
+standard_curves.py
+true.h
+version

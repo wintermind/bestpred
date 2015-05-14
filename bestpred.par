@@ -1,0 +1,256 @@
+! bestpred.par -- Parameter file for maindcr program
+!                for best prediction of lactation
+!                yields and persistency of MFPS.
+!
+! Each parameter is preceded by a description of what
+! that parameter does, as well as a list of allowed
+! values. As a general rule, the program DOES NOT
+! check your inputs for correctness. Be careful.
+!
+! IMPORTANT NOTE: If you are getting strange error messages
+! when you run the maindcr program check the maindcr.par
+! file to make sure that it has valid <eol> characters in
+! it. Some editors do not set them correctly, particularly
+! on the last line of the file.
+!
+! "bestpred" is the namelist that contains all of the
+! parameters defined in this file; it's a Fortran thing.
+! Please don't change it.
+!
+&bestpred
+  !
+  ! laclen specifies the length of the lactation for
+  ! which calculations are being made. The default is
+  ! 305. A negative value will be set to 305.
+  !
+  laclen = 305
+  !
+  ! maxlen specifies the longest possible lactation
+  ! length. maxlen MUST be >= laclen. A negative value will
+  ! be set to 305; if maxlen < laclen then maxlen will be
+  ! set to laclen.
+  !
+  maxlen = 365
+  !
+  ! dailyfreq specifies the frequency with which actual
+  ! daily yields are calculated. The default is 6 (actual yields
+  ! calculated every 6 days). A value of 0 indicates that no daily
+  ! values should be calculated. A negative value will be set to
+  ! the default of 6. Note that computing time increases as
+  ! dailyfreq decreases towards 1, that is, a dailyfreq of 1 will
+  ! require much more processing time than a dailyfreq of 6.
+  !
+  dailyfreq = 1
+  !
+  ! plotfreq specifies the frequency with which yields are plotted
+  ! by the inbuilt plotting routine.
+  !
+  plotfreq = 6
+  !
+  ! 0 doesn't adjust for 3X milking,
+  ! 1 uses old factors, 2 new factors,
+  ! 3 uses phased-in factors over time
+  !
+  use3X = 3
+  !
+  ! 1 does only ST to save CPU time; 3 does MT M,F,P;
+  ! 4 does MT M,F,P,S. Single trait best prediction
+  ! is the fastest, may be moot on modern hardware.
+  !
+  mtrait = 3
+  !
+  ! Individual Source 14 records contain an mtrait
+  ! switch. When set to a valid non-zero value of
+  ! mtrait (1, 3, or 4) GLOBALmtrait overrides the
+  ! individual switches and uses the same computat-
+  ! ion method for all records read from the same
+  ! file. Only used when source = 14.
+  !
+  GLOBALmtrait = 3
+  !
+  ! GRAFplot contains 0/1/2 flags indicating which
+  ! lactation curves should be plotted; 1 = plot ME,
+  ! 2 = plot actual, 0 = don't plot. The elements
+  ! of GRAFplot are 1 = Milk, 2 = Fat, 3 = Protein,
+  ! and 4 = SCS. ONscreen overrides GRAFplot -- if
+  ! terminal output is turned off, graphs will not
+  ! be drawn even if GRAFplot is turned on. GRAFplot
+  ! also controls which traits are writter to the
+  ! CURVEfile output file.
+  !
+  GRAFplot(1) = 0
+  GRAFplot(2) = 0
+  GRAFplot(3) = 0
+  GRAFplot(4) = 0
+  !
+  ! UNITSin and UNITSout specify, respectively, the
+  ! units in which yields are inout (UNITSin) and the
+  ! the units in which output should be written
+  ! (UNITSout). Note that these apply only to MFP,
+  ! not S. Values may be 'P' for pounds or 'K' for
+  ! kilograms, and UNITSin and UNITSout may be set
+  ! to different units. If an invalid value is pro-
+  ! vided a default of 'P' is used.
+  !
+  UNITSin = 'P'
+  UNITSout = 'P'
+  !
+  ! PERSfloor and PERSceiling provide minimum and
+  ! maximum values for persistencies calculated
+  ! from Source 14 records. Values smaller than
+  ! the floor and larger than the ceiling are
+  ! rounded up or down, as appropriate. These
+  ! options affect ONLY Source 14 records. If you
+  ! set a floor or ceiling whose absolute value
+  ! is greater than 9.99 then you will also need
+  ! to modify the format used to write the contents
+  ! of OUTfile in the maindcr.f90 program.
+  !
+  PERSfloor = -9.99
+  PERSceiling = 9.99
+  !
+  ! DO NOT change "source" unless you really know what
+  ! you're doing. Settings of interest:
+  !   10 inputs test day data in format 4 as defined in
+  !      the document "Listing of Format 4 -- Cow/Doe
+  !      Lactation Data utilizing multiple test day
+  !      segments" (http://aipl.arsusda.gov/formats/fmt4.html)
+  !      from the file format4.dat.
+  !   11 uses testing plans coded by user from the file
+  !      DCRexample.dat.
+  !   12 inputs USDA master file records from the file
+  !      input.dcr.
+  !   14 inputs TD data in DRMS format from the file
+  !      INfile and writes results to the file OUTfile.
+  !   15 As source 10, but also reads average 305-d MFPS
+  !      yields from the file format4.means. EXPERIMENTAL!
+  !   24 reads filenames for format 14 files from a text
+  !      named "pcdart_files.txt".
+  !
+  source = 10
+  !
+  ! breed11 specifies the breed to be used for running the
+  ! testing plans coded in DCRexample.dat. It is used only
+  ! when source == 11. Breeds are as follows: 1=AY, 2=BS,
+  ! 3=GU, 4=HO, 5=JE, 6=MS. The default is 4 (Holstein).
+  !
+  breed11 = 4
+  !
+  ! breedUNK specifies the breed to be used when an unknown
+  ! breed code is found in a cow ID. Breeds are as follows:
+  ! 1=AY, 2=BS, 3=GU, 4=HO, 5=JE, 6=MS. The default is 4
+  ! (Holstein).
+  !
+  breedUNK = 4
+  !
+  ! If WRITEcurve is set to 1 then daily BP, YD yields,
+  ! and standard curves will be written to the file
+  ! CURVEfile. Note that CURVEfile is limited to 64
+  ! characters. The cow ID will be appended to CURVEfile
+  ! to create the final output file name. If an invalid
+  ! value is provided for WRITEcurve a default of 0 is used.
+  ! If CURVEsmall is set to 1 then only actual yield data
+  ! are written to CURVEfile. If CURVEsingle is set to
+  ! 1 then a separate CURVEfile is written out for each
+  ! animal in the dataset.
+  !
+  WRITEcurve = 1
+  CURVEfile = 'cowcurve'
+  CURVEsmall = 0
+  CURVEsingle = 1
+  !
+  ! If WRITEdata is set to 1 then daily BP, YD yields,
+  ! and standard curves will be written to the file
+  ! DATAfile. Note that DATAfile is limited to 64
+  ! characters. The cow ID will be appended to DATAfile
+  ! to create the final output file name. If an invalid
+  ! value is provided for WRITEdata a default of 0 is used.
+  !
+  WRITEdata = 1
+  DATAfile = 'cowdata'
+  !
+  ! INfile and OUTfile specify the names to be used when
+  ! reading and writing Source 14 input and output files.
+  ! Note that filenames are limited to 64 characters.
+  !
+  INfile = 'pcdart.bpi'
+  OUTfile = 'pcdart.bpo'
+  !
+  ! maxprnt is the number of graphs to display. Set maxprnt
+  ! to 1 and DEBUGmsgs to 1 to display the input variables.
+  !
+  maxprnt = 0
+  !
+  ! ONscreen is used to toggle output to the screen/terminal
+  ! on (1) and off (0). ONscreen overrides maxprnt -- if
+  ! console output is turned off only debugging messages will
+  ! print to the terminal even if maxprnt is not 0.
+  !
+  ONscreen = 1
+  !
+  ! obs is the maximum number of records to read (DO NOT
+  ! CHANGE, default = 99999999).
+  !
+  obs = 99999999
+  !
+  ! maxshow is the maximum number of cow records to display
+  ! (DO NOT CHANGE, default = 5).
+  !
+  maxshow = 1
+  !
+  ! maxtd is the maximum number of test days in a lactation
+  ! (DO NOT CHANGE, default = 50).
+  !
+  maxtd = 50
+  !
+  ! INTmethod specifies the interpolation method used for
+  ! lactation curves for MFP (DO NOT CHANGE, default = 'L').
+  !
+  INTmethod = 'W'
+  !
+  ! INTmethodSCS specifies the interpolation method used for
+  ! lactation curves for SCS (DO NOT CHANGE, default = 'L').
+  !
+  INTmethodSCS = 'G'
+  ! The following parms are for controlling debugging messages
+  ! and the like. You'll  probably never need to touch them.
+  !
+  ! When DEBUGparms is set the parameters read from this file
+  ! will be written to the screen.
+  DEBUGparms = 0
+  ! DEBUGmsgs overrides ONscreen -- debugging messages will print
+  ! even if screen output has been deactivated.
+  DEBUGmsgs  = 0
+  !
+  ! The elements of dim0 are the DIM midpoints for persistency chosen
+  ! such that yield and persistency for each trait are phenotypically
+  ! independent.
+  !
+  ! These are the 2007 default values (smooth curves).
+  dim0(1) = 115
+  dim0(2) = 115
+  dim0(3) = 150
+  dim0(4) = 155
+  dim0(5) = 161
+  dim0(6) = 152
+  dim0(7) = 159
+  dim0(8) = 148
+  !
+  ! Set dim0flag to 1 to estimate new tipping points,Note that this
+  ! slows down processing considerably and you don't want to estimate
+  ! on-the-fly unless you have to.
+  dim0flag = 0
+  !
+  ! The name of the file to which logging messages are written.
+  ! Limited to 64 characters.
+  !
+  LOGon   = 0
+  LOGfile = 'example'
+  LOGfreq = 0
+  !
+  ! region and season specify defaults for analyses that
+  ! use region- and/or season-specific lactation curves.
+  !
+  region = 1
+  season = 1
+/
