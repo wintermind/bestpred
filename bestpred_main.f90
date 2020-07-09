@@ -333,7 +333,73 @@ program bestpred_main
       if ( nomore == 1 ) go to 200
 !                                                         Fixed portion
  11   if ( source .ne. 14 .and. source .ne. 24 ) then
-        if ( nread > 0 ) then
+      !!! This section was commented out below and moved upwards in the flow to solve
+      !!! a bug where the first cow in a source 10 file was being processed 
+      !!! without any lactation records, and her records were being misattributed
+      !!! to the subsequent cow, etc. Caused by setting f248 at the first pass, but
+      !!! only reading seg(i) at the second, at which time f248 is overwritten
+      !!! before they were both written to format4 and sent to bestpred_fmt4().
+      !!! Putting this section here allows the first format4 to receive 
+      !!! the correct nseg, ntd & seg(i).
+
+      !!! However, moving this section upwards breaks the ending logic since beforehand
+      !!! nomore was set *before* the last record was processed (though at the second pass
+      !!! for the final f248, but now it is set when all records have been processed. The
+      !!! logic of 50 has been changed to suit.
+
+      !!! WARNING: not tested with any source other than 10 & 15, but it seems
+      !!! that all which match ( source .ne. 14 .and. source .ne. 24 ) should
+      !!! have been affected by the same issue. I haven't checked the logic for
+      !!! source 14 & 24.
+   18   if ( source == 10 .or. source == 15 ) then
+           read(10,20,end=50) n248,nseg,(seg(i),i=1,nseg)
+   20      format(a248,i2,50a23)
+    !        read(n248,12) cow,nherd,nfresh
+  !     Removed as read below
+            !read(n248,181) cow,nherd,nfresh
+    !181    format(t3,a17,t107,a8,t128,a8)
+    !        print *, '[bestpred_main]: n248   : ', n248
+            ! This needs more thorough investigation when I have time -- I think
+            ! that f248 and n248 are redundant and a single variable can be used
+            ! consistently in bestpred_main.f90. This fixes Miels's problem with
+            ! incomplete Format information being passed to bestpred_fmt4.f90. The
+            ! values written to the format4 variable were being taken from f248 in
+            ! all cases, never from n248, so the data from the input file were never
+            ! being passed downstream.
+            !f248 = n248
+        else if(source == 12) then
+          read(12,25,end=50) cow,nherd,nfresh,nlacno, &
+                                nseg,(seg(i),i=1,nseg)
+   25     format(a17,a8,a8,i1,i2,50a23)
+          write(n248,12) cow,nherd,nfresh,nlacno
+        else if(source == 13) then
+          read(13,30,end=50) cow,nherd,nfresh,nbirth,nlacno, &
+                             lnwt,ndoprev,herd14,avgage,     &
+                             nseg,(shrtseg(i),i=1,nseg)
+   30     format(a17,3a8,i1,i3,i3,i5,i4,i4,i2,i2,50a14)
+    !                                                  Adjust herd average
+          ageadj = 1.0 + .0056*(72 - avgage)
+         if(avgage > 72) ageadj = 1.0
+            do 35 j=1,3
+   35       herd14(j) = herd14(j)*ageadj
+    !                                                       End adjustment
+            do 37 j=1,nseg
+             read(shrtseg(j),36) dimm,milk,fatpc,propc,scs,freq
+    36       format(i3,i4,3i2,i1)
+    37       write(seg(j),38) dimm,'11',freq,freq,freq,'01100', &
+                              milk,fatpc,propc,scs
+    38       format(i3,a,3i1,a,i4,3i2)
+            write(n248,40) cow,nbirth,nherd,nfresh,nlacno,herd14,dev305
+    40     format(t3,a17,t71,a8,t107,a8,t128,a8,t159,i2, &
+                  t188,i5,2i4,i6,2i5)
+        else
+          ! Handle non-matched source
+          stop("Source Code Not Recognised")
+        end if
+        !!! Removed this line to allow all records which have (now) just been read
+        !!! to continue to receive ntd, seg etc.
+        !!! WARNING: Not tested for any source other than 10 & 15
+        !if ( nread > 0 ) then
           herd305(:,:) = 0.d0
           f248 = n248
 !          read(f248,12) cowid,herd,fresh
@@ -363,59 +429,67 @@ program bestpred_main
             length = max(length,dims)
 !			if ( ntd > 20 ) print *, 'segment ', ntd, ' ', segment(ntd)
  15       continue
-        end if
+        !end if
 !        print *, '[bestpred_main]: length read from format 4T:', length
         write(f248(136:138),'(i3)') length
       end if
-!                                                     Read next record
- 18   if ( source == 10 .or. source == 15 ) then
-        read(10,20,end=50) n248,nseg,(seg(i),i=1,nseg)
- 20     format(a248,i2,50a23)
-!        read(n248,12) cow,nherd,nfresh
-        read(n248,181) cow,nherd,nfresh
- 181    format(t3,a17,t107,a8,t128,a8)
-!        print *, '[bestpred_main]: n248   : ', n248
-        ! This needs more thorough investigation when I have time -- I think
-        ! that f248 and n248 are redundant and a single variable can be used
-        ! consistently in bestpred_main.f90. This fixes Miels's problem with
-        ! incomplete Format information being passed to bestpred_fmt4.f90. The
-        ! values written to the format4 variable were being taken from f248 in
-        ! all cases, never from n248, so the data from the input file were never
-        ! being passed downstream.
-        f248 = n248
-      end if
 
-!***
-!if(cow /= 'HOUSA00093WPJ3927') go to 18
-      if(source == 12) then
-        read(12,25,end=50) cow,nherd,nfresh,nlacno, &
-                            nseg,(seg(i),i=1,nseg)
- 25     format(a17,a8,a8,i1,i2,50a23)
-        write(n248,12) cow,nherd,nfresh,nlacno
-      end if
+      !!! This section was commented out and moved upwards in the flow to solve
+      !!! a bug where the first cow in a source 10 file was being processed 
+      !!! without any lactation records, and her records were being misattributed
+      !!! to the subsequent cow, etc. Caused by setting f248 at the first pass, but
+      !!! only reading seg(i) at the second, at which time f248 is overwritten
+      !!! before they were both written to format4 and sent to bestpred_fmt4()
 
-      if(source == 13) then
-        read(13,30,end=50) cow,nherd,nfresh,nbirth,nlacno, &
-                           lnwt,ndoprev,herd14,avgage,     &
-                           nseg,(shrtseg(i),i=1,nseg)
- 30     format(a17,3a8,i1,i3,i3,i5,i4,i4,i2,i2,50a14)
-!                                                  Adjust herd average
-        ageadj = 1.0 + .0056*(72 - avgage)
-        if(avgage > 72) ageadj = 1.0
-        do 35 j=1,3
- 35       herd14(j) = herd14(j)*ageadj
-!                                                       End adjustment
-        do 37 j=1,nseg
-          read(shrtseg(j),36) dimm,milk,fatpc,propc,scs,freq
- 36       format(i3,i4,3i2,i1)
- 37       write(seg(j),38) dimm,'11',freq,freq,freq,'01100', &
-                           milk,fatpc,propc,scs
- 38       format(i3,a,3i1,a,i4,3i2)
-        write(n248,40) cow,nbirth,nherd,nfresh,nlacno,herd14,dev305
- 40     format(t3,a17,t71,a8,t107,a8,t128,a8,t159,i2, &
-               t188,i5,2i4,i6,2i5)
-      end if
-
+!                                   Read next record
+! 18   if ( source == 10 .or. source == 15 ) then
+!        read(10,20,end=50) n248,nseg,(seg(i),i=1,nseg)
+! 20     format(a248,i2,50a23)
+!!        read(n248,12) cow,nherd,nfresh
+!        read(n248,181) cow,nherd,nfresh
+! 181    format(t3,a17,t107,a8,t128,a8)
+!!        print *, '[bestpred_main]: n248   : ', n248
+!        ! This needs more thorough investigation when I have time -- I think
+!        ! that f248 and n248 are redundant and a single variable can be used
+!        ! consistently in bestpred_main.f90. This fixes Miels's problem with
+!        ! incomplete Format information being passed to bestpred_fmt4.f90. The
+!        ! values written to the format4 variable were being taken from f248 in
+!        ! all cases, never from n248, so the data from the input file were never
+!        ! being passed downstream.
+!        f248 = n248
+!      end if
+!
+!!***
+!!if(cow /= 'HOUSA00093WPJ3927') go to 18
+!      if(source == 12) then
+!        read(12,25,end=50) cow,nherd,nfresh,nlacno, &
+!                            nseg,(seg(i),i=1,nseg)
+! 25     format(a17,a8,a8,i1,i2,50a23)
+!        write(n248,12) cow,nherd,nfresh,nlacno
+!      end if
+!
+!      if(source == 13) then
+!        read(13,30,end=50) cow,nherd,nfresh,nbirth,nlacno, &
+!                           lnwt,ndoprev,herd14,avgage,     &
+!                           nseg,(shrtseg(i),i=1,nseg)
+! 30     format(a17,3a8,i1,i3,i3,i5,i4,i4,i2,i2,50a14)
+!!                                                  Adjust herd average
+!        ageadj = 1.0 + .0056*(72 - avgage)
+!        if(avgage > 72) ageadj = 1.0
+!        do 35 j=1,3
+! 35       herd14(j) = herd14(j)*ageadj
+!!                                                       End adjustment
+!        do 37 j=1,nseg
+!          read(shrtseg(j),36) dimm,milk,fatpc,propc,scs,freq
+! 36       format(i3,i4,3i2,i1)
+! 37       write(seg(j),38) dimm,'11',freq,freq,freq,'01100', &
+!                           milk,fatpc,propc,scs
+! 38       format(i3,a,3i1,a,i4,3i2)
+!        write(n248,40) cow,nbirth,nherd,nfresh,nlacno,herd14,dev305
+! 40     format(t3,a17,t71,a8,t107,a8,t128,a8,t159,i2, &
+!               t188,i5,2i4,i6,2i5)
+!      end if
+!
 ! If the source is 24 then we need to loop over the contents of the file and
 ! handle each row as a separate source 14 file. IF we've read all of the
 ! records from a source 14 file then it's time to read the next filename.
@@ -598,7 +672,13 @@ program bestpred_main
       if ( nread > obs ) go to 50
       go to 52
  50   nomore = 1
-      if ( nread == 0 ) go to 200
+      !!! Done to prevent the last cow being duplicated, as with the changes in flow
+      !!! in 11 nomore=1 is now only set *after* the last record has already been 
+      !!! processed. Failing to change this logic leads to the last record being 
+      !!! duplicated in the output files.
+      !!! WARNING: I have not tested this for any source other than 10 & 15
+      go to 200
+ !     if ( nread == 0 ) go to 200
       !!! This was used to skip the loop at 52, but we actually need
       !!! to enter that code in order to catch the last record in a
       !!! file with no TD data.
@@ -744,9 +824,10 @@ program bestpred_main
             TDflag = 0
             if ( TDstatus(i) ) TDflag = 1
             ! Write the record to the OUTfile.
+            !!! Required for compilation with g95
             write(45,"(a7,1x,i3,1x,i1,1x,f5.1,1x,f3.1,1x,f3.1,1x,f3.1,1x,      &
-                  3(i5,1x,i4,1x,i4,1x,i4,1x),                                  &
-                  3(i3,1x),4(f5.2,1x),8(i2,1x),f5.1,1x,f3.1,1x,f3.1,1x,f3.1)") &
+                  &3(i5,1x,i4,1x,i4,1x,i4,1x),                                  &
+                  &3(i3,1x),4(f5.2,1x),8(i2,1x),f5.1,1x,f3.1,1x,f3.1,1x,f3.1)") &
               cowid7, i, TDflag                                                &
               , TEMPestyld(1), TEMPestyld(2), TEMPestyld(3), TEMPestyld(4)                         &
               , int(YLDvec(1,9)), int(YLDvec(1,10)), int(YLDvec(1,11)), int(YLDvec(1,12))          &
